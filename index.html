@@ -1,1091 +1,727 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌴 Nossa Praia - Cardápio Digital</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossa Praia - Cardápio Completo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<!-- ============================================ -->
-<!-- VARIÁVEIS DE PRODUTOS E PREÇOS - EDITAR AQUI -->
-<!-- ============================================ -->
-<script>
-// 🐟 PORÇÕES - ISCAS
-const precosIscas = {
-  "cacao": 48,
-  "pescada": 45,
-  "merluza": 45,
-  "tilapia": 45,
-  "lambari": 35,
-  "pintado": 45
-};
+        :root {
+            --ocean-blue: #0066cc;
+            --deep-blue: #004499;
+            --sun-orange: #ff8c00;
+            --sun-yellow: #ffb700;
+            --sand: #f4e4c1;
+            --white: #ffffff;
+            --dark: #1a1a2e;
+            --gray: #666666;
+        }
 
-// 🦐 PORÇÕES - FRUTOS DO MAR
-const precosFrutosMar = {
-  "camaraoEmpanadoRosa": 45,
-  "casquinhaSiri": 12,
-  "lula": 35,
-  "camarao7B": 48,
-  "marisco": 45
-};
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ocean-blue) 0%, var(--deep-blue) 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
 
-// 🍤 PORÇÕES - PETISCOS
-const precosPetiscos = {
-  "bolinhoBacalhau": 32,
-  "bolinhoTilapia": 32,
-  "risolisCamarao": 35
-};
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--ocean-blue);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
 
-// 🍟 ACOMPANHAMENTOS
-const precosAcompanhamentos = {
-  "batataFrita": 27,
-  "mandioca": 27,
-  "paoAlho": 12
-};
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-// 🍺 BEBIDAS - CERVEJAS 600ml
-const precosCervejas600 = {
-  "heineken600": 15,
-  "original600": 14,
-  "imperio600": 11,
-  "brahma600": 12,
-  "skol600": 12
-};
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: var(--sun-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
-// 🍺 BEBIDAS - CERVEJAS LATA
-const precosCervejasLata = {
-  "heinekenLata": 10,
-  "imperioLata": 6,
-  "skolLata": 6,
-  "brahmaLata": 6
-};
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
-// 🍺 BEBIDAS - CERVEJAS LONG NECK
-const precosCervejasLongNeck = {
-  "heinekenLN": 12,
-  "heinekenZeroLN": 12
-};
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), transparent);
+        }
 
-// 🍹 BEBIDAS - CAIPIRINHAS (Sabores: Limão, Abacaxi, Maracujá)
-const precosCaipirinhas = {
-  "pinga": 15,
-  "vodkaSmirnoff": 20,
-  "gin": 18
-};
+        .logo-container {
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
 
-// 🥃 BEBIDAS - OUTRAS BEBIDAS
-const precosOutrasBebidas = {
-  "whisky": 25,
-  "licor": 20
-};
+        .logo {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+            animation: float 6s ease-in-out infinite;
+        }
 
-// 🍺 BEBIDAS - CHOPP
-const precosChopp = {
-  "choppPilsen": 15,
-  "choppIPA": 18
-};
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
 
-// 🥤 BEBIDAS SEM ÁLCOOL - REFRIGERANTES LATA
-const precosRefriLata = {
-  "cocaCola": 6,
-  "sprite": 6,
-  "fanta": 6,
-  "guarana": 6
-};
+        .subtitle {
+            font-family: 'Pacifico', cursive;
+            color: var(--sun-yellow);
+            font-size: 1.5rem;
+            margin-top: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
 
-// 🧃 BEBIDAS SEM ÁLCOOL - SUCOS
-const precosSucos = {
-  "tampicoUva": 8,
-  "tampicoCitrus": 8
-};
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-// ⚡ BEBIDAS SEM ÁLCOOL - ENERGÉTICOS
-const precosEnergeticos = {
-  "redbull": 18
-};
+        .menu-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-// Função auxiliar para formatar preço
-function formatarPreco(valor) {
-  return valor === 0 ? "0" : valor.toString();
-}
-</script>
-<!-- ============================================ -->
-<!-- FIM DAS VARIÁVEIS -->
-<!-- ============================================ -->
+        .menu-title h1 {
+            font-family: 'Pacifico', cursive;
+            color: var(--white);
+            font-size: 3rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+        .menu-title p {
+            color: var(--sand);
+            font-size: 1.1rem;
+        }
 
-:root {
-  --ocean-deep: #0B1426;
-  --ocean-mid: #1E3A5F;
-  --ocean-light: #2E8B8B;
-  --sand: #F4E4C1;
-  --coral: #FF6B6B;
-  --gold: #FFD700;
-  --glass: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.15);
-}
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.6s ease-out;
+        }
 
-body {
-  font-family: 'Outfit', sans-serif;
-  background: linear-gradient(135deg, #0B1426 0%, #1E3A5F 50%, #0ea5a4 100%);
-  background-attachment: fixed;
-  color: white;
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
-}
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-/* Animated background waves */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(46, 139, 139, 0.2) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-  animation: pulse 8s ease-in-out infinite;
-}
+        .section-header {
+            background: linear-gradient(135deg, var(--sun-orange) 0%, var(--sun-yellow) 100%);
+            color: var(--white);
+            padding: 20px 30px;
+            font-family: 'Pacifico', cursive;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-@keyframes pulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.05); }
-}
+        .section-header:hover {
+            filter: brightness(1.1);
+        }
 
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  position: relative;
-  z-index: 1;
-}
+        .section-header .icon {
+            font-size: 2.5rem;
+            opacity: 0.3;
+            margin-left: 10px;
+        }
 
-/* Header with glassmorphism */
-.header {
-  text-align: center;
-  margin-bottom: 50px;
-  padding: 40px 30px;
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 30px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
-}
+        .section-header .toggle {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            margin-left: 10px;
+        }
 
-.header::before {
-  content: '🌊';
-  position: absolute;
-  font-size: 200px;
-  opacity: 0.05;
-  top: -50px;
-  right: -30px;
-  animation: float 6s ease-in-out infinite;
-}
+        .section.collapsed .toggle {
+            transform: rotate(-90deg);
+        }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(5deg); }
-}
+        .section-content {
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
 
-.header h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  margin-bottom: 10px;
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B6B 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
-  letter-spacing: -1px;
-}
+        .section.collapsed .section-content {
+            display: none;
+        }
 
-.header p {
-  font-size: 18px;
-  opacity: 0.9;
-  font-weight: 300;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
+        .subcategory {
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
 
-/* Navigation tabs - MENU PRINCIPAL */
-.nav-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
-}
+        .subcategory:last-child {
+            margin-bottom: 0;
+        }
 
-.tab-btn {
-  padding: 14px 28px;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 50px;
-  color: white;
-  font-family: 'Outfit', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-.tab-btn:hover, .tab-btn.active {
-  background: rgba(255, 107, 107, 0.3);
-  border-color: var(--coral);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
-}
+        .subcategory-title {
+            color: var(--ocean-blue);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--sun-yellow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-/* Menu sections */
-.menu-section {
-  display: none;
-  animation: fadeInUp 0.6s ease-out;
-}
+        .subcategory-icon {
+            font-size: 1.5rem;
+        }
 
-.menu-section.active {
-  display: block;
-}
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+        .product-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-/* Section title */
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  margin-bottom: 30px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding-bottom: 15px;
-  border-bottom: 3px solid var(--coral);
-  color: var(--gold);
-}
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,102,204,0.2);
+            border-color: var(--sun-yellow);
+        }
 
-.section-title span {
-  font-size: 40px;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
-}
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sun-orange), var(--sun-yellow));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
 
-/* Subsection title */
-.subsection-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 22px;
-  margin: 35px 0 20px 0;
-  color: white;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-left: 15px;
-  border-left: 4px solid var(--ocean-light);
-}
+        .product-card:hover::before {
+            transform: scaleX(1);
+        }
 
-/* Menu items grid */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-  padding-left: 20px;
-}
+        .product-card.indisponivel {
+            opacity: 0.6;
+            background: #f0f0f0;
+        }
 
-.menu-item {
-  background: var(--glass);
-  backdrop-filter: blur(15px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
+        .product-card.indisponivel::after {
+            content: 'INDISPONIVEL';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            background: rgba(255,0,0,0.8);
+            color: white;
+            padding: 5px 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border-radius: 5px;
+        }
 
-.menu-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s;
-}
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
 
-.menu-item:hover::before {
-  left: 100%;
-}
+        .product-name {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.1rem;
+            flex: 1;
+        }
 
-.menu-item:hover {
-  transform: translateY(-5px) scale(1.02);
-  border-color: var(--coral);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 107, 107, 0.2);
-  background: rgba(255, 255, 255, 0.12);
-}
+        .product-price {
+            background: linear-gradient(135deg, var(--sun-orange) 0%, var(--sun-yellow) 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(255,140,0,0.3);
+        }
 
-.item-info {
-  flex: 1;
-}
+        .product-description {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
 
-.item-name {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 5px;
-  color: white;
-}
+        .product-badges {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
 
-.item-desc {
-  font-size: 13px;
-  opacity: 0.7;
-  font-weight: 300;
-}
+        .product-banner {
+            display: inline-block;
+            background: var(--ocean-blue);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.item-price {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--gold);
-  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-  position: relative;
-}
+        .product-banner.destaque {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
+            animation: pulse 2s infinite;
+        }
 
-.item-price::before {
-  content: 'R$';
-  font-size: 14px;
-  vertical-align: top;
-  margin-right: 2px;
-  opacity: 0.8;
-}
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,71,87,0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255,71,87,0); }
+        }
 
-/* Special badge for popular items */
-.badge {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background: var(--coral);
-  color: white;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 5px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-  transform: rotate(12deg);
-}
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--white);
+        }
 
-/* Sabores info */
-.sabores-info {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 15px;
-  padding: 15px 20px;
-  margin: 15px 0 25px 20px;
-  font-style: italic;
-  opacity: 0.9;
-  display: inline-block;
-}
+        .footer p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
 
-/* Footer */
-.footer {
-  text-align: center;
-  margin-top: 60px;
-  padding: 30px;
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 25px;
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
-}
+        .social-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
 
-.footer-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  opacity: 0.9;
-}
+        .social-links a {
+            color: var(--white);
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+        }
 
-/* Floating action button */
-.fab {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, var(--coral), #FF8E53);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  cursor: pointer;
-  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
-  transition: all 0.3s;
-  z-index: 100;
-  border: none;
-  color: white;
-}
+        .social-links a:hover {
+            transform: scale(1.2);
+            color: var(--sun-yellow);
+        }
 
-.fab:hover {
-  transform: scale(1.1) rotate(10deg);
-  box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
-}
+        @media (max-width: 768px) {
+            .menu-title h1 {
+                font-size: 2rem;
+            }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .header h1 {
-    font-size: 36px;
-  }
+            .section-header {
+                font-size: 1.5rem;
+                padding: 15px 20px;
+            }
 
-  .menu-grid {
-    grid-template-columns: 1fr;
-    padding-left: 10px;
-  }
+            .section-content {
+                padding: 20px;
+            }
 
-  .nav-tabs {
-    gap: 10px;
-  }
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-  .tab-btn {
-    padding: 12px 20px;
-    font-size: 13px;
-  }
+        @media print {
+            body {
+                background: white;
+            }
 
-  .section-title {
-    font-size: 28px;
-  }
-
-  .subsection-title {
-    font-size: 18px;
-  }
-}
-
-/* Loading animation */
-.loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--ocean-deep);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.5s;
-}
-
-.loader.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.loader-content {
-  font-size: 60px;
-  animation: bounce 1s infinite;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-</style>
+            .section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+        }
+    </style>
 <base target="_blank">
 </head>
 <body>
-
-<!-- Loading Screen -->
-<div class="loader" id="loader">
-  <div class="loader-content">🌴</div>
-</div>
-
-<div class="container">
-  <!-- Header -->
-  <div class="header">
-    <h1>Nossa Praia</h1>
-    <p>Peixes crocantes e clima de praia em Cosmópolis</p>
-  </div>
-
-  <!-- Navigation - MENU PRINCIPAL (3 categorias) -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showSection('porcoes')">🍽️ Porções</button>
-    <button class="tab-btn" onclick="showSection('bebidas')">🍺 Bebidas</button>
-    <button class="tab-btn" onclick="showSection('semAlcool')">🥤 Sem Álcool</button>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- SEÇÃO: PORÇÕES -->
-  <!-- ========================================== -->
-  <div id="porcoes" class="menu-section active">
-    <h2 class="section-title"><span>🍽️</span> Porções</h2>
-
-    <!-- ISCAS -->
-    <h3 class="subsection-title">🐟 Iscas</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Cação</div>
-          <div class="item-desc">Filé fresco empanado crocante</div>
-        </div>
-        <div class="item-price" data-produto="iscas.cacao"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Pescada</div>
-          <div class="item-desc">Tradicional filé de pescada</div>
-        </div>
-        <div class="item-price" data-produto="iscas.pescada"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Merluza</div>
-          <div class="item-desc">Filé suave e delicado</div>
-        </div>
-        <div class="item-price" data-produto="iscas.merluza"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Tilápia</div>
-          <div class="item-desc">Filé de tilápia premium</div>
-        </div>
-        <div class="item-price" data-produto="iscas.tilapia"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Lambari</div>
-          <div class="item-desc">Peixinho crocante tradicional</div>
-        </div>
-        <div class="item-price" data-produto="iscas.lambari"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Pintado</div>
-          <div class="item-desc">Peixe de água doce regional</div>
-        </div>
-        <div class="item-price" data-produto="iscas.pintado"></div>
-      </div>
+    <div class="loading" id="loading">
+        <div class="loader"></div>
+        <p style="color: white; margin-top: 20px; font-family: 'Pacifico', cursive;">Carregando cardápio...</p>
     </div>
 
-    <!-- FRUTOS DO MAR -->
-    <h3 class="subsection-title">🦐 Frutos do Mar</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Camarão Empanado Rosa G</div>
-          <div class="item-desc">8 unidades - Camarões selecionados</div>
+    <header class="header">
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo" class="logo" id="logo-img">
         </div>
-        <div class="item-price" data-produto="frutosMar.camaraoEmpanadoRosa"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Casquinha de Siri</div>
-          <div class="item-desc">Tradicional da culinária baiana</div>
+        <p class="subtitle" id="slogan">O melhor da praia no seu prato!</p>
+    </header>
+
+    <div class="container">
+        <div class="menu-title">
+            <h1>Cardápio</h1>
+            <p id="subtitulo">Porções fresquinhas e bebidas geladas</p>
         </div>
-        <div class="item-price" data-produto="frutosMar.casquinhaSiri"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Lula</div>
-          <div class="item-desc">Ao alho e óleo - clássico irresistível</div>
-        </div>
-        <div class="item-price" data-produto="frutosMar.lula"></div>
-      </div>
-      <div class="menu-item" style="position: relative;">
-        <span class="badge">Popular</span>
-        <div class="item-info">
-          <div class="item-name">Camarão 7B</div>
-          <div class="item-desc">Camarão empanado sequinho</div>
-        </div>
-        <div class="item-price" data-produto="frutosMar.camarao7B"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Marisco</div>
-          <div class="item-desc">Ao vinagrete - frescor do mar</div>
-        </div>
-        <div class="item-price" data-produto="frutosMar.marisco"></div>
-      </div>
+
+        <div id="menu-container"></div>
     </div>
 
-    <!-- PETISCOS -->
-    <h3 class="subsection-title">🍤 Petiscos</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Bolinho de Bacalhau</div>
-          <div class="item-desc">8 unidades - Receita portuguesa tradicional</div>
-        </div>
-        <div class="item-price" data-produto="petiscos.bolinhoBacalhau"></div>
-      </div>
-      <div class="menu-item" style="position: relative;">
-        <span class="badge">Top</span>
-        <div class="item-info">
-          <div class="item-name">Bolinho de Tilápia</div>
-          <div class="item-desc">8 unidades - Saboroso e crocante</div>
-        </div>
-        <div class="item-price" data-produto="petiscos.bolinhoTilapia"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Risolis de Camarão</div>
-          <div class="item-desc">8 unidades - Massa leve com recheio cremoso</div>
-        </div>
-        <div class="item-price" data-produto="petiscos.risolisCamarao"></div>
-      </div>
-    </div>
+    <footer class="footer">
+        <p id="footer-nome">🌴 Nossa Praia Bar e Petiscos 🌴</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">O melhor sabor da praia!</p>
+        <div class="social-links" id="social-links"></div>
+    </footer>
 
-    <!-- ACOMPANHAMENTOS -->
-    <h3 class="subsection-title">🍟 Acompanhamentos</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Batata Frita</div>
-          <div class="item-desc">Crocantes e douradas</div>
-        </div>
-        <div class="item-price" data-produto="acompanhamentos.batataFrita"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Mandioca</div>
-          <div class="item-desc">Frita - tradicional brasileira</div>
-        </div>
-        <div class="item-price" data-produto="acompanhamentos.mandioca"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Pão de Alho</div>
-          <div class="item-desc">Crocante e saboroso</div>
-        </div>
-        <div class="item-price" data-produto="acompanhamentos.paoAlho"></div>
-      </div>
-    </div>
-  </div>
+    <script>
+        // ============================================
+        // DADOS DO CARDÁPIO - EDITE AQUI
+        // ============================================
 
-  <!-- ========================================== -->
-  <!-- SEÇÃO: BEBIDAS -->
-  <!-- ========================================== -->
-  <div id="bebidas" class="menu-section">
-    <h2 class="section-title"><span>🍺</span> Bebidas</h2>
+        const MENU_DATA = {
+            "restaurante": {
+                "nome": "Nossa Praia",
+                "subtitulo": "Bar e Petiscos",
+                "slogan": "O melhor da praia no seu prato!",
+                "logo": "logo.png",
+                "contato": {
+                    "instagram": "@nossapraia.bar",
+                    "whatsapp": "(19)99815-1108"
+                }
+            },
+            "cardapio": [
+                // ============================================
+                // SEÇÃO 1: PORÇÕES
+                // ============================================
+                {
+                    "id": "porcoes",
+                    "titulo": "Porcoes",
+                    "icone": "🌊",
+                    "subcategorias": [
+                        {
+                            "id": "iscas",
+                            "titulo": "Iscas de Peixe",
+                            "icone": "🐟",
+                            "produtos": [
+                                {"id": "tilapia", "nome": "Tilápia", "descricao": "Tilápia premium", "preco": 45, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "cacao",   "nome": "Cação", "descricao": "Fresco empanado crocante", "preco": 48, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "pescada", "nome": "Pescada", "descricao": "Tradicional isca de pescada", "preco": 45, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "merluza", "nome": "Merluza", "descricao": "Suave e delicado", "preco": 45, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "lambari", "nome": "Lambari", "descricao": "Peixinho crocante tradicional", "preco": 35, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "pintado", "nome": "Pintado", "descricao": "Peixe de água doce regional", "preco": 45, "unidade": null, "destaque": false, "disponivel": true}
+                            ]
+                        },
+                        {
+                            "id": "frutosdomar",
+                            "titulo": "Frutos do Mar",
+                            "icone": "🦐",
+                            "produtos": [
+                                {"id": "camaraorosa", "nome": "Camarão Empanado Rosa G", "descricao": "Camarões selecionados", "preco": 45, "unidade": "8 UN", "destaque": false, "disponivel": true},
+                                {"id": "casquinha", "nome": "Casquinha de Siri", "descricao": "Bem temperado", "preco": 12, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "lula", "nome": "Lula", "descricao": "Ao alho e óleo", "preco": 35, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "camarao7b", "nome": "Camarão 7B", "descricao": "Camarão empanado sequinho", "preco": 48, "unidade": null, "destaque": true, "disponivel": true},
+                                {"id": "marisco", "nome": "Marisco", "descricao": "Ao vinagrete - frescor do mar", "preco": 45, "unidade": null, "destaque": false, "disponivel": true}
+                            ]
+                        },
+                        {
+                            "id": "petiscos",
+                            "titulo": "Petiscos Especiais",
+                            "icone": "🧆",
+                            "produtos": [
+                                {"id": "bolinhobacalhau", "nome": "Bolinho de Bacalhau", "descricao": "Receita portuguesa tradicional", "preco": 32, "unidade": "8 UN", "destaque": false, "disponivel": true},
+                                {"id": "bolinhotilapia", "nome": "Bolinho de Tilápia", "descricao": "Saboroso e crocante", "preco": 32, "unidade": "8 UN", "destaque": false, "disponivel": true},
+                                {"id": "risolis", "nome": "Risolis de Camarão", "descricao": "Massa leve com catupiry", "preco": 35, "unidade": "8 UN", "destaque": false, "disponivel": true}
+                            ]
+                        },
+                        {
+                            "id": "acompanhamentos",
+                            "titulo": "Acompanhamentos",
+                            "icone": "🍟",
+                            "produtos": [
+                                {"id": "batata", "nome": "Batata Frita", "descricao": "Crocantes e douradas", "preco": 27, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "mandioca", "nome": "Mandioca", "descricao": "Frita - Tradicional brasileira", "preco": 27, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "paodealho", "nome": "Pão de Alho", "descricao": "Bolinha Zinho - Crocante e saboroso", "preco": 12, "unidade": "4 UN", "destaque": false, "disponivel": true}
+                            ]
+                        }
+                    ]
+                },
 
-    <!-- CERVEJAS 600ml -->
-    <h3 class="subsection-title">🍺 Cervejas 600ml</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Heineken</div>
-          <div class="item-desc">Premium holandesa</div>
-        </div>
-        <div class="item-price" data-produto="cervejas600.heineken600"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Original</div>
-          <div class="item-desc">Puro malte</div>
-        </div>
-        <div class="item-price" data-produto="cervejas600.original600"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Império</div>
-          <div class="item-desc">Sabor marcante</div>
-        </div>
-        <div class="item-price" data-produto="cervejas600.imperio600"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Brahma</div>
-          <div class="item-desc">Tradicional brasileira</div>
-        </div>
-        <div class="item-price" data-produto="cervejas600.brahma600"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Skol</div>
-          <div class="item-desc">A cerveja do Brasil</div>
-        </div>
-        <div class="item-price" data-produto="cervejas600.skol600"></div>
-      </div>
-    </div>
+                // ============================================
+                // SEÇÃO 2: BEBIDAS (NOVO!)
+                // ============================================
+                {
+                    "id": "bebidas",
+                    "titulo": "Bebidas",
+                    "icone": "🍺",
+                    "subcategorias": [
 
-    <!-- CERVEJAS LATA -->
-    <h3 class="subsection-title">🥫 Cervejas Lata</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Heineken</div>
-          <div class="item-desc">350ml - Premium holandesa</div>
-        </div>
-        <div class="item-price" data-produto="cervejasLata.heinekenLata"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Império</div>
-          <div class="item-desc">350ml - Sabor marcante</div>
-        </div>
-        <div class="item-price" data-produto="cervejasLata.imperioLata"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Skol</div>
-          <div class="item-desc">350ml - A cerveja do Brasil</div>
-        </div>
-        <div class="item-price" data-produto="cervejasLata.skolLata"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Brahma</div>
-          <div class="item-desc">350ml - Tradicional brasileira</div>
-        </div>
-        <div class="item-price" data-produto="cervejasLata.brahmaLata"></div>
-      </div>
-    </div>
+                        {
+                            "id": "cervejas",
+                            "titulo": "Cervejas",
+                            "icone": "🍺",
+                            "produtos": [
+                                {"id": "Heineken",  "nome": "Heineken", "descricao": "Cerveja 600ml", "preco": 16, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Imperio",   "nome": "Imperio", "descricao": "Cerveja 600ml", "preco": 12, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Brahma",    "nome": "Brahma", "descricao": "Cerveja 600ml", "preco": 12, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Skol",      "nome": "Skol", "descricao": "Cerveja 600ml", "preco": 12, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Original",  "nome": "Original", "descricao": "Cerveja 600ml", "preco": 14, "unidade": null, "destaque": false, "disponivel": true},
+                            ]
+                        },
 
-    <!-- CERVEJAS LONG NECK -->
-    <h3 class="subsection-title">🍾 Cervejas Long Neck</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Heineken</div>
-          <div class="item-desc">330ml - Premium holandesa</div>
-        </div>
-        <div class="item-price" data-produto="cervejasLongNeck.heinekenLN"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Heineken Zero</div>
-          <div class="item-desc">330ml - Sem álcool</div>
-        </div>
-        <div class="item-price" data-produto="cervejasLongNeck.heinekenZeroLN"></div>
-      </div>
-    </div>
+                        {
+                            "id": "cervejas2",
+                            "titulo": "",
+                            "icone": "",                            
+                            "produtos": [
+                                {"id": "Heineken",   "nome": "Heineken", "descricao": "Long neck 330ml", "preco": 9, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Heinekenz",  "nome": "Heineken Zero", "descricao": "Long neck 330ml", "preco": 9, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Original",   "nome": "Original", "descricao": "Barrigudinha 300ml", "preco": 12, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Brahmal",   "nome": "Brahma", "descricao": "Lata 350ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Skoll",     "nome": "Skol", "descricao": "Lata 350ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
 
-    <!-- CAIPIRINHAS -->
-    <h3 class="subsection-title">🍹 Caipirinhas</h3>
-    <div class="sabores-info">Sabores disponíveis: Limão, Abacaxi, Maracujá</div>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Pinga</div>
-          <div class="item-desc">Tradicional brasileira</div>
-        </div>
-        <div class="item-price" data-produto="caipirinhas.pinga"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Vodka Smirnoff</div>
-          <div class="item-desc">Clássica e forte</div>
-        </div>
-        <div class="item-price" data-produto="caipirinhas.vodkaSmirnoff"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">GIN</div>
-          <div class="item-desc">Sofisticada e refrescante</div>
-        </div>
-        <div class="item-price" data-produto="caipirinhas.gin"></div>
-      </div>
-    </div>
+                            ]
+                        },
 
-    <!-- OUTRAS BEBIDAS -->
-    <h3 class="subsection-title">🥃 Outras Bebidas</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Whisky</div>
-          <div class="item-desc">Dose</div>
-        </div>
-        <div class="item-price" data-produto="outrasBebidas.whisky"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Licor</div>
-          <div class="item-desc">Dose</div>
-        </div>
-        <div class="item-price" data-produto="outrasBebidas.licor"></div>
-      </div>
-    </div>
+                        {
+                            "id": "Caip",
+                            "titulo": "Caipirinhas",
+                            "icone": "🍹",
+                            "produtos": [
+                                {"id": "caipirinha", "nome": "Caipirinha", "descricao": "Cachaça com Fruta (Limão/Abacaxi/Maracuja/Kiwi)", "preco": 15, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "caipiroska", "nome": "Caipiroska", "descricao": "Vodka Smirnoff com Fruta (Limão/Abacaxi/Maracuja/Kiwi)", "preco": 18, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Sakerinha",  "nome": "Sakerina", "descricao": "Sake com Fruta (Limão/Abacaxi/Maracuja/Kiwi)", "preco": 18, "unidade": null, "destaque": false, "disponivel": true},
+                            ]
+                        },
 
-    <!-- CHOPP -->
-    <h3 class="subsection-title">🍺 Chopp</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Chopp Pilsen 500ml</div>
-          <div class="item-desc">Gelado e refrescante</div>
-        </div>
-        <div class="item-price" data-produto="chopp.choppPilsen"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Chopp IPA 500ml</div>
-          <div class="item-desc">Mais amargo e aromático</div>
-        </div>
-        <div class="item-price" data-produto="chopp.choppIPA"></div>
-      </div>
-    </div>
-  </div>
+                        {
+                            "id": "drinksg",
+                            "titulo": "Drinks Gin",
+                            "icone": "🍹",
+                            "produtos": [
+                                {"id": "gint", "nome": "Gin com Tonica", "descricao": "Agua tonica, gelo e limão Scicilano", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "ginf", "nome": "Gin Frutas", "descricao": "Agua tonica, gelo e Fruta (Morango/Abacaxi/Maracuja)", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "drym", "nome": "Dry Martini", "descricao": "Gin Vermute, Twister limão e gelo", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "meias", "nome": "Meia de Seda", "descricao": "Gin, Leite condensado, licor cacau", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                            ]
+                        },
 
-  <!-- ========================================== -->
-  <!-- SEÇÃO: BEBIDAS SEM ÁLCOOL -->
-  <!-- ========================================== -->
-  <div id="semAlcool" class="menu-section">
-    <h2 class="section-title"><span>🥤</span> Bebidas sem Álcool</h2>
+                        {
+                            "id": "drinksv",
+                            "titulo": "Drinks Vodka",
+                            "icone": "🍹",
+                            "produtos": [
+                                {"id": "lagoa", "nome": "Lagoa Azul", "descricao": "Vodka, curaçao Blue, limão, soda limonada e gelo", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "cosmo", "nome": "Cosmopolitan", "descricao": "Vodka, laranja, limão e gelo", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "redl", "nome": "Red Lemon", "descricao": "Vodka, Groselha, soda limonada, Limão Sciciliano e gelo", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "vodkf", "nome": "Vodka Frutas", "descricao": "Soda Limonada, Leite condensado e Fruta (Morango/Abacaxi/Maracuja)", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                            ]
+                        },
 
-    <!-- REFRIGERANTES LATA -->
-    <h3 class="subsection-title">🥤 Refrigerantes Lata</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Coca-Cola</div>
-          <div class="item-desc">350ml</div>
-        </div>
-        <div class="item-price" data-produto="refriLata.cocaCola"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Sprite</div>
-          <div class="item-desc">350ml - Limão</div>
-        </div>
-        <div class="item-price" data-produto="refriLata.sprite"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Fanta</div>
-          <div class="item-desc">350ml - Laranja</div>
-        </div>
-        <div class="item-price" data-produto="refriLata.fanta"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Guaraná</div>
-          <div class="item-desc">350ml</div>
-        </div>
-        <div class="item-price" data-produto="refriLata.guarana"></div>
-      </div>
-    </div>
+                        {
+                            "id": "drinksvi",
+                            "titulo": "Drinks Vinho",
+                            "icone": "🍹",
+                            "produtos": [
+                                {"id": "espa", "nome": "Espanhola", "descricao": "Vinho, leite condensado e Abacaxi", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "vera", "nome": "Verano", "descricao": "Vinho, Soda limonada e Limão Sciciliano", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "frutv", "nome": "Frutas", "descricao": "Vinho, Leite condensado, Suco de fruta (Abacaxi/Maracuja) ", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                            ]
+                        },
 
-    <!-- SUCOS -->
-    <h3 class="subsection-title">🧃 Sucos</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Tampico Uva</div>
-          <div class="item-desc">Caixinha 300ml</div>
-        </div>
-        <div class="item-price" data-produto="sucos.tampicoUva"></div>
-      </div>
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Tampico Frutas Cítricas</div>
-          <div class="item-desc">Caixinha 300ml</div>
-        </div>
-        <div class="item-price" data-produto="sucos.tampicoCitrus"></div>
-      </div>
-    </div>
+                        {
+                            "id": "outbe",
+                            "titulo": "Doses",
+                            "icone": "🍹",
+                            "produtos": [
+                                {"id": "cach", "nome": "Cachaça", "descricao": "Cachaça Dom Taparo", "preco": 7, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "whis", "nome": "Whisky", "descricao": "Whisky Ballantine 10 anos", "preco": 10, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "frutv", "nome": "Frutas", "descricao": "Vinho, Leite condensado, Suco de fruta (Abacaxi/Maracuja) ", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                            ]
+                        },
 
-    <!-- ENERGÉTICOS -->
-    <h3 class="subsection-title">⚡ Energéticos</h3>
-    <div class="menu-grid">
-      <div class="menu-item">
-        <div class="item-info">
-          <div class="item-name">Redbull</div>
-          <div class="item-desc">250ml - Energy drink</div>
-        </div>
-        <div class="item-price" data-produto="energeticos.redbull"></div>
-      </div>
-    </div>
-  </div>
+                        {
+                            "id": "refrigerantes",
+                            "titulo": "Refrigerantes",
+                            "icone": "🥤",
+                            "produtos": [
+                                {"id": "coca",      "nome": "Coca-Cola",            "descricao": "Lata 350ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "guarana",   "nome": "Guaraná Antarctica",   "descricao": "Lata 350ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "sprite",    "nome": "Sprite",               "descricao": "Lata 350ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "fanta",     "nome": "Fanta Laranja",        "descricao": "Lata 350ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "coca1l",    "nome": "Coca-Cola",            "descricao": "Garrafa 1L", "preco": 12, "unidade": null, "destaque": false, "disponivel": true}
+                            ]
+                        },
+                        {
+                            "id": "sucos",
+                            "titulo": "Refrescos",
+                            "icone": "🧃",
+                            "produtos": [
+                                {"id": "tampf", "nome": "Suco Tampico", "descricao": "Suco Tampico Uva, Frutas Cítricas", "preco": 8, "unidade": null, "destaque": false, "disponivel": true},
+                            ]
+                        },
+                        {
+                            "id": "agua",
+                            "titulo": "Água e Outros",
+                            "icone": "💧",
+                            "produtos": [
+                                {"id": "aguasg", "nome": "Água com Gás", "descricao": "500ml", "preco": 4, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "aguas", "nome": "Água sem Gás", "descricao": "500ml", "preco": 4, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "redbull", "nome": "Red Bull", "descricao": "Energy drink 250ml", "preco": 12, "unidade": null, "destaque": false, "disponivel": true}
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "config": {
+                "moeda": "R$",
+                "corPrimaria": "#0066cc",
+                "corSecundaria": "#ff8c00"
+            }
+        };
 
-  <!-- Footer -->
-  <div class="footer">
-    <div class="footer-item">⚽ Ambiente agradável</div>
-    <div class="footer-item">📺 Futebol ao vivo</div>
-    <div class="footer-item">👨‍👩‍👧 Espaço família</div>
-  </div>
-</div>
+        // ============================================
+        // FUNÇÕES DE RENDERIZAÇÃO
+        // ============================================
 
-<!-- Floating Action Button -->
-<button class="fab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Voltar ao topo">⬆️</button>
+        function renderMenu(data) {
+            document.title = data.restaurante.nome + ' - Cardápio';
+            document.getElementById('logo-img').src = data.restaurante.logo;
+            document.getElementById('logo-img').alt = data.restaurante.nome;
+            document.getElementById('slogan').textContent = data.restaurante.slogan;
+            document.getElementById('footer-nome').textContent = '🌴 ' + data.restaurante.nome + ' ' + data.restaurante.subtitulo + ' 🌴';
 
-<script>
-// ============================================
-// INICIALIZAÇÃO DOS PREÇOS - NÃO EDITAR ABAIXO
-// ============================================
+            const menuContainer = document.getElementById('menu-container');
+            menuContainer.innerHTML = '';
 
-// Mapeamento de produtos para variáveis
-const mapaPrecos = {
-  // Iscas
-  "iscas.cacao": precosIscas.cacao,
-  "iscas.pescada": precosIscas.pescada,
-  "iscas.merluza": precosIscas.merluza,
-  "iscas.tilapia": precosIscas.tilapia,
-  "iscas.lambari": precosIscas.lambari,
-  "iscas.pintado": precosIscas.pintado,
+            data.cardapio.forEach((secao) => {
+                const sectionEl = document.createElement('section');
+                sectionEl.className = 'section';
+                sectionEl.innerHTML = `
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <span>${secao.titulo}</span>
+                        <div style="display: flex; align-items: center;">
+                            <span class="icon">${secao.icone}</span>
+                            <span class="toggle">[v]</span>
+                        </div>
+                    </div>
+                    <div class="section-content" id="section-${secao.id}"></div>
+                `;
 
-  // Frutos do Mar
-  "frutosMar.camaraoEmpanadoRosa": precosFrutosMar.camaraoEmpanadoRosa,
-  "frutosMar.casquinhaSiri": precosFrutosMar.casquinhaSiri,
-  "frutosMar.lula": precosFrutosMar.lula,
-  "frutosMar.camarao7B": precosFrutosMar.camarao7B,
-  "frutosMar.marisco": precosFrutosMar.marisco,
+                const contentEl = sectionEl.querySelector(`#section-${secao.id}`);
 
-  // Petiscos
-  "petiscos.bolinhoBacalhau": precosPetiscos.bolinhoBacalhau,
-  "petiscos.bolinhoTilapia": precosPetiscos.bolinhoTilapia,
-  "petiscos.risolisCamarao": precosPetiscos.risolisCamarao,
+                secao.subcategorias.forEach(sub => {
+                    const subEl = document.createElement('div');
+                    subEl.className = 'subcategory';
 
-  // Acompanhamentos
-  "acompanhamentos.batataFrita": precosAcompanhamentos.batataFrita,
-  "acompanhamentos.mandioca": precosAcompanhamentos.mandioca,
-  "acompanhamentos.paoAlho": precosAcompanhamentos.paoAlho,
+                    let produtosHTML = '';
+                    sub.produtos.forEach(prod => {
+                        const disponivelClass = prod.disponivel ? '' : 'indisponivel';
+                        const unidadeHTML = prod.unidade ? `<span class="product-banner">${prod.unidade}</span>` : '';
+                        const destaqueHTML = prod.destaque ? `<span class="product-banner destaque">⭐ TOP</span>` : '';
 
-  // Cervejas 600ml
-  "cervejas600.heineken600": precosCervejas600.heineken600,
-  "cervejas600.original600": precosCervejas600.original600,
-  "cervejas600.imperio600": precosCervejas600.imperio600,
-  "cervejas600.brahma600": precosCervejas600.brahma600,
-  "cervejas600.skol600": precosCervejas600.skol600,
+                        produtosHTML += `
+                            <div class="product-card ${disponivelClass}" data-id="${prod.id}">
+                                <div class="product-header">
+                                    <span class="product-name">${prod.nome}</span>
+                                    <span class="product-price">${data.config.moeda} ${prod.preco}</span>
+                                </div>
+                                <p class="product-description">${prod.descricao}</p>
+                                <div class="product-badges">
+                                    ${unidadeHTML}
+                                    ${destaqueHTML}
+                                </div>
+                            </div>
+                        `;
+                    });
 
-  // Cervejas Lata
-  "cervejasLata.heinekenLata": precosCervejasLata.heinekenLata,
-  "cervejasLata.imperioLata": precosCervejasLata.imperioLata,
-  "cervejasLata.skolLata": precosCervejasLata.skolLata,
-  "cervejasLata.brahmaLata": precosCervejasLata.brahmaLata,
+                    subEl.innerHTML = `
+                        <h3 class="subcategory-title">
+                            <span class="subcategory-icon">${sub.icone}</span>
+                            ${sub.titulo}
+                        </h3>
+                        <div class="products-grid">
+                            ${produtosHTML}
+                        </div>
+                    `;
 
-  // Cervejas Long Neck
-  "cervejasLongNeck.heinekenLN": precosCervejasLongNeck.heinekenLN,
-  "cervejasLongNeck.heinekenZeroLN": precosCervejasLongNeck.heinekenZeroLN,
+                    contentEl.appendChild(subEl);
+                });
 
-  // Caipirinhas
-  "caipirinhas.pinga": precosCaipirinhas.pinga,
-  "caipirinhas.vodkaSmirnoff": precosCaipirinhas.vodkaSmirnoff,
-  "caipirinhas.gin": precosCaipirinhas.gin,
+                menuContainer.appendChild(sectionEl);
+            });
 
-  // Outras Bebidas
-  "outrasBebidas.whisky": precosOutrasBebidas.whisky,
-  "outrasBebidas.licor": precosOutrasBebidas.licor,
+            const socialContainer = document.getElementById('social-links');
+            const instagram = data.restaurante.contato.instagram.replace('@', '');
+            const whatsapp = data.restaurante.contato.whatsapp.replace(/\D/g, '');
+            socialContainer.innerHTML = `
+                <a href="https://instagram.com/${instagram}" title="Instagram">📷</a>
+                <a href="https://wa.me/${whatsapp}" title="WhatsApp">📱</a>
+            `;
 
-  // Chopp
-  "chopp.choppPilsen": precosChopp.choppPilsen,
-  "chopp.choppIPA": precosChopp.choppIPA,
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 500);
+        }
 
-  // Refri Lata
-  "refriLata.cocaCola": precosRefriLata.cocaCola,
-  "refriLata.sprite": precosRefriLata.sprite,
-  "refriLata.fanta": precosRefriLata.fanta,
-  "refriLata.guarana": precosRefriLata.guarana,
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('collapsed');
+        }
 
-  // Sucos
-  "sucos.tampicoUva": precosSucos.tampicoUva,
-  "sucos.tampicoCitrus": precosSucos.tampicoCitrus,
-
-  // Energéticos
-  "energeticos.redbull": precosEnergeticos.redbull
-};
-
-// Função para atualizar todos os preços na página
-function atualizarPrecos() {
-  document.querySelectorAll('[data-produto]').forEach(elemento => {
-    const chaveProduto = elemento.getAttribute('data-produto');
-    if (mapaPrecos.hasOwnProperty(chaveProduto)) {
-      elemento.textContent = formatarPreco(mapaPrecos[chaveProduto]);
-    }
-  });
-}
-
-// Loading animation
-window.addEventListener('load', () => {
-  // Atualiza os preços assim que a página carrega
-  atualizarPrecos();
-
-  setTimeout(() => {
-    document.getElementById('loader').classList.add('hidden');
-  }, 1000);
-});
-
-// Tab navigation
-function showSection(sectionId) {
-  // Hide all sections
-  const sections = document.querySelectorAll('.menu-section');
-  sections.forEach(section => {
-    section.classList.remove('active');
-  });
-
-  // Remove active class from all buttons
-  const buttons = document.querySelectorAll('.tab-btn');
-  buttons.forEach(btn => {
-    btn.classList.remove('active');
-  });
-
-  // Show selected section
-  document.getElementById(sectionId).classList.add('active');
-
-  // Add active class to clicked button
-  event.target.classList.add('active');
-
-  // Smooth scroll to top of content
-  document.querySelector('.nav-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// Add hover sound effect simulation (visual feedback)
-document.querySelectorAll('.menu-item').forEach(item => {
-  item.addEventListener('mouseenter', function() {
-    this.style.transform = 'translateY(-5px) scale(1.02)';
-  });
-
-  item.addEventListener('mouseleave', function() {
-    this.style.transform = 'translateY(0) scale(1)';
-  });
-
-  // Click animation
-  item.addEventListener('click', function() {
-    this.style.transform = 'scale(0.98)';
-    setTimeout(() => {
-      this.style.transform = 'translateY(-5px) scale(1.02)';
-    }, 150);
-  });
-});
-
-// Parallax effect on scroll
-window.addEventListener('scroll', () => {
-  const scrolled = window.pageYOffset;
-  const parallax = document.querySelector('.header::before');
-  if (parallax) {
-    parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
-  }
-});
-</script>
-
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMenu(MENU_DATA);
+        });
+    </script>
 </body>
 </html>
