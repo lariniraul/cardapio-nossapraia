@@ -172,7 +172,7 @@
             margin-left: 10px;
         }
 
-        .section.collapsed .toggle {
+                .section.collapsed .toggle {
             transform: rotate(-90deg);
         }
 
@@ -447,6 +447,7 @@
                 {
                     "id": "porcoes",
                     "titulo": "Porcoes",
+                    "collapsed": true,   // ← AQUI! true = fechado,                    
                     "icone": "🌊",
                     "subcategorias": [
                         {
@@ -503,6 +504,7 @@
                 {
                     "id": "bebidas",
                     "titulo": "Bebidas",
+                    "collapsed": true,   // ← AQUI! true = fechado,                      
                     "icone": "🍺",
                     "subcategorias": [
 
@@ -526,7 +528,7 @@
                             "produtos": [
                                 {"id": "Heineken",   "nome": "Heineken", "descricao": "Long neck 330ml", "preco": 9, "unidade": null, "destaque": false, "disponivel": true},
                                 {"id": "Heinekenz",  "nome": "Heineken Zero", "descricao": "Long neck 330ml", "preco": 9, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "Original",   "nome": "Original", "descricao": "Barrigudinha 300ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "Original",   "nome": "Original", "descricao": "Barrigudinha 300ml", "preco": 12, "unidade": null, "destaque": false, "disponivel": true},
                                 {"id": "Brahmal",   "nome": "Brahma", "descricao": "Lata 350ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
                                 {"id": "Skoll",     "nome": "Skol", "descricao": "Lata 350ml", "preco": 6, "unidade": null, "destaque": false, "disponivel": true},
 
@@ -549,10 +551,10 @@
                             "titulo": "Drinks Gin",
                             "icone": "🍹",
                             "produtos": [
-                                {"id": "gint", "nome": "Gin com Tonica", "descricao": "Agua tonica, gelo e limão Scicilano", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "ginf", "nome": "Gin Frutas", "descricao": "Agua tonica, gelo e Fruta (Morango/Abacaxi/Maracuja)", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "drym", "nome": "Dry Martini", "descricao": "Gin Vermute, Twister limão e gelo", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "meias", "nome": "Meia de Seda", "descricao": "Gin, Leite condensado, licor cacau", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "gint", "nome": "Gin com Tonica", "descricao": "Agua tonica, gelo e limão Scicilano", "preco": 20, "unidade": "500ml", "destaque": false, "disponivel": true},
+                                {"id": "ginf", "nome": "Gin Frutas", "descricao": "Agua tonica, gelo e Fruta (Morango/Abacaxi/Maracuja)", "preco": 20, "unidade": "500ml", "destaque": false, "disponivel": true},
+                                {"id": "drym", "nome": "Dry Martini", "descricao": "Gin Vermute, Twister limão e gelo", "preco": 20, "unidade": "500ml", "destaque": false, "disponivel": true},
+                                {"id": "meias", "nome": "Meia de Seda", "descricao": "Gin, Leite condensado, licor cacau", "preco": 20, "unidade": "500ml", "destaque": false, "disponivel": true},
                             ]
                         },
 
@@ -561,10 +563,10 @@
                             "titulo": "Drinks Vodka",
                             "icone": "🍹",
                             "produtos": [
-                                {"id": "lagoa", "nome": "Lagoa Azul", "descricao": "Vodka, curaçao Blue, limão, soda limonada e gelo", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "cosmo", "nome": "Cosmopolitan", "descricao": "Vodka, laranja, limão e gelo", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "redl", "nome": "Red Lemon", "descricao": "Vodka, Groselha, soda limonada, Limão Sciciliano e gelo", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "vodkf", "nome": "Vodka Frutas", "descricao": "Soda Limonada, Leite condensado e Fruta (Morango/Abacaxi/Maracuja)", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "lagoa", "nome": "Lagoa Azul", "descricao": "Vodka, curaçao Blue, limão, soda limonada e gelo", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "cosmo", "nome": "Cosmopolitan", "descricao": "Vodka, laranja, limão e gelo", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "redl", "nome": "Red Lemon", "descricao": "Vodka, Groselha, soda limonada, Limão Sciciliano e gelo", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "vodkf", "nome": "Vodka Frutas", "descricao": "Soda Limonada, Leite condensado e Fruta (Morango/Abacaxi/Maracuja)", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
                             ]
                         },
 
@@ -573,9 +575,9 @@
                             "titulo": "Drinks Vinho",
                             "icone": "🍹",
                             "produtos": [
-                                {"id": "espa", "nome": "Espanhola", "descricao": "Vinho, leite condensado e Abacaxi", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "vera", "nome": "Verano", "descricao": "Vinho, Soda limonada e Limão Sciciliano", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
-                                {"id": "frutv", "nome": "Frutas", "descricao": "Vinho, Leite condensado, Suco de fruta (Abacaxi/Maracuja) ", "preco": 25, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "espa", "nome": "Espanhola", "descricao": "Vinho, leite condensado e Abacaxi", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "vera", "nome": "Verano", "descricao": "Vinho, Soda limonada e Limão Sciciliano", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
+                                {"id": "frutv", "nome": "Frutas", "descricao": "Vinho, Leite condensado, Suco de fruta (Abacaxi/Maracuja) ", "preco": 20, "unidade": null, "destaque": false, "disponivel": true},
                             ]
                         },
 
@@ -646,7 +648,15 @@
 
             data.cardapio.forEach((secao) => {
                 const sectionEl = document.createElement('section');
-                sectionEl.className = 'section';
+
+                // AQUI ESTÁ A MÁGICA - adiciona classe 'collapsed' se collapsed: true
+                if (secao.collapsed) {
+                    sectionEl.className = 'section collapsed';
+                } else {
+                    sectionEl.className = 'section';
+                }
+
+                //sectionEl.className = 'section';
                 sectionEl.innerHTML = `
                     <div class="section-header" onclick="toggleSection(this)">
                         <span>${secao.titulo}</span>
